@@ -1,43 +1,103 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LAZORS Animado</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mini Navegador + Cloud Gaming</title>
+  <style>
+    body, html {
+      margin: 0; padding: 0; height: 100%;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background-color: #222;
+      color: white;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    #inputUrl {
+      flex-grow: 1;
+      font-size: 1rem;
+      padding: 8px;
+      border: none;
+      border-radius: 4px;
+    }
+    button {
+      padding: 8px 15px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+    }
+    iframe {
+      flex-grow: 1;
+      border: none;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
 </head>
 <body>
-    <!-- LETTER L -->
-    <svg class="letter letter-l" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
-        <path class="cls-1 stem" style="--color: rgb(246, 9, 149)" d="M150,100 L150,700 L500,700 L500,650 L200,650 L200,100 Z" />
-    </svg>
+  <header>
+    <input type="text" id="inputUrl" placeholder="URL o búsqueda" />
+    <button id="btnGo">Ir</button>
+    <button id="btnGeForce">GeForce Now</button>
+    <button id="btnXbox">Xbox Cloud Gaming</button>
+  </header>
+  <iframe id="iframe" src=""></iframe>
 
-    <!-- LETTER A -->
-    <svg class="letter letter-a" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
-        <path class="cls-1 stem" style="--color: rgb(254, 219, 59)" d="M400,100 L200,700 L250,700 L350,450 L450,700 L500,700 L400,100 Z" />
-        <path class="cls-1 dot" style="--color: rgb(49, 191, 186)" d="M300,400 L500,400 L450,550 L350,550 Z" />
-    </svg>
+  <script>
+    const input = document.getElementById('inputUrl');
+    const btnGo = document.getElementById('btnGo');
+    const btnGeForce = document.getElementById('btnGeForce');
+    const btnXbox = document.getElementById('btnXbox');
+    const iframe = document.getElementById('iframe');
 
-    <!-- LETTER Z -->
-    <svg class="letter letter-z" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
-        <path class="cls-1 stem" style="--color: rgb(88, 40, 215)" d="M150,100 L650,100 L150,700 L650,700 L650,650 L250,650 L650,100 L150,100 Z" />
-    </svg>
+    function isValidUrl(string) {
+      try {
+        new URL(string);
+        return true;
+      } catch (_) {
+        return false;
+      }
+    }
 
-    <!-- LETTER O -->
-    <svg class="letter letter-o" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
-        <circle class="cls-1 stem" style="--color: rgb(246, 9, 149)" cx="400" cy="400" r="200" />
-        <circle class="cls-1 dot" style="--color: rgb(254, 219, 59)" cx="400" cy="400" r="120" />
-    </svg>
+    function loadPage() {
+      let text = input.value.trim();
+      if (!text) return;
 
-    <!-- LETTER R - Mejor visibilidad -->
-    <svg class="letter letter-r" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
-        <path class="cls-1 stem" style="--color: rgb(49, 191, 186)" d="M150,100 L150,700 L400,700 L500,500 Q450,450 400,500 L400,300 Q450,200 600,150 L500,100 Q350,200 300,350 L250,700 Z" />
-        <path class="cls-1 dot" style="--color: rgb(246, 9, 149)" d="M250,500 Q350,400 500,500" />
-    </svg>
+      if (isValidUrl(text)) {
+        iframe.src = text;
+      } else if (isValidUrl('https://' + text)) {
+        iframe.src = 'https://' + text;
+      } else {
+        const query = encodeURIComponent(text);
+        iframe.src = `https://www.google.com/search?q=${query}`;
+      }
+    }
 
-    <!-- LETTER S -->
-    <svg class="letter letter-s" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
-        <path class="cls-1 stem" style="--color: rgb(88, 40, 215)" d="M550,150 C350,100 150,150 150,300 C150,450 550,400 550,550 C550,700 250,700 150,650" />
-    </svg>
+    btnGo.addEventListener('click', loadPage);
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') loadPage();
+    });
+
+    btnGeForce.addEventListener('click', () => {
+      // URL oficial GeForce Now
+      // Nota: NVIDIA puede bloquear que se abra en iframe por seguridad
+      iframe.src = "https://play.geforcenow.com/";
+    });
+
+    btnXbox.addEventListener('click', () => {
+      // URL oficial Xbox Cloud Gaming
+      iframe.src = "https://www.xbox.com/es-ES/play";
+    });
+  </script>
 </body>
 </html>
+
